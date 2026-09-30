@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="ka" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ტაროს საიდუმლო წიგნი | Tarot Book & Guide</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for mystical UI icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for Georgian & Mystical typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@600;700;900&family=Cinzel:wght@500;700;900&family=Noto+Serif+Georgian:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#07020d',
+                        night: {
+                            900: '#0a0314',
+                            800: '#130826',
+                            700: '#1b0e38'
+                        },
+                        abyss: {
+                            900: '#080d1e',
+                            800: '#0f172a',
+                            700: '#172554'
+                        },
+                        neonPink: {
+                            400: '#f472b6',
+                            500: '#ec4899',
+                            600: '#d946ef',
+                            glow: '#ff2a8d'
+                        },
+                        mysticGold: {
+                            300: '#fde047',
+                            400: '#f59e0b',
+                            500: '#d97706',
+                            glow: '#fbbf24'
+                        }
+                    },
+                    fontFamily: {
+                        georgian: ['Noto Serif Georgian', 'serif'],
+                        cinzel: ['Cinzel Decorative', 'Cinzel', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: radial-gradient(circle at 50% 20%, #170b30 0%, #0a0314 50%, #05020a 100%);
+            color: #f1f5f9;
+            font-family: 'Noto Serif Georgian', serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Canvas background overlay */
+        #stars-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Neon Pink & Gold Glow Effects */
+        .pink-glow-text {
+            color: #ff2a8d;
+            text-shadow: 0 0 12px rgba(255, 42, 141, 0.6), 0 0 25px rgba(236, 72, 153, 0.4);
+        }
+
+        .gold-glow-text {
+            color: #fbbf24;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5), 0 0 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .gradient-title {
+            background: linear-gradient(135deg, #ffffff 0%, #f472b6 40%, #ff2a8d 70%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Glassmorphism card container */
+        .glass-card {
+            background: rgba(19, 8, 38, 0.7);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(236, 72, 153, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(10, 3, 20, 0.5);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 42, 141, 0.7);
+            box-shadow: 0 0 25px rgba(255, 42, 141, 0.3), inset 0 0 15px rgba(236, 72, 153, 0.15);
+        }
+
+        /* Card Image Container Styling */
+        .tarot-img-wrapper {
+            position: relative;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 2px solid rgba(251, 191, 36, 0.4);
+            box-shadow: 0 0 15px rgba(10, 3, 20, 0.8);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .tarot-img-wrapper:hover {
+            border-color: #ff2a8d;
+            box-shadow: 0 0 20px rgba(255, 42, 141, 0.5);
+        }
+
+        /* 3D Flip Card Effect */
+        .card-perspective {
+            perspective: 1000px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+        }
+
+        .card-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0314;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a124d;
+            border: 1px solid #ec4899;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ec4899;
+        }
+    </style>
+</head>
+<body class="relative flex flex-col min-h-screen selection:bg-neonPink-500 selection:text-white">
+
+    <!-- STARLIGHT CANVAS -->
+    <canvas id="stars-canvas"></canvas>
+
+    <!-- NAVIGATION HEADER -->
+    <header class="sticky top-0 z-40 bg-night-900/90 backdrop-blur-md border-b border-neonPink-500/30 px-4 lg:px-8 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-3">
+            
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer group" onclick="switchSection('catalog')">
+                <div class="w-11 h-11 rounded-full border-2 border-neonPink-500/80 flex items-center justify-center bg-night-800 shadow-[0_0_15px_rgba(255,42,141,0.5)] group-hover:scale-105 transition">
+                    <i class="fa-solid fa-moon text-neonPink-400 text-xl group-hover:rotate-12 transition"></i>
+                </div>
+                <div>
+                    <h1 class="font-cinzel text-xl md:text-2xl font-black tracking-wider gradient-title">ტაროს საიდუმლო წიგნი</h1>
+                    <p class="text-[11px] text-neonPink-400/80 tracking-widest uppercase font-semibold">Rider-Waite Tarot & Mystical Guide</p>
+                </div>
+            </div>
+
+            <!-- Nav Controls -->
+            <nav class="flex items-center space-x-2 md:space-x-4 text-xs md:text-sm font-semibold">
+                <button onclick="switchSection('catalog')" id="nav-catalog" class="nav-btn text-neonPink-400 border-b-2 border-neonPink-500 pb-1 px-3 py-1.5 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-book-bookmark text-xs"></i> კატალოგი
+                </button>
+                <button onclick="switchSection('spread')" id="nav-spread" class="nav-btn text-gray-400 hover:text-neonPink-300 pb-1 px-3 py-1.5 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-xs"></i> ონლაინ გაშლა
+                </button>
+                <button onclick="drawRandomCard()" class="bg-gradient-to-r from-neonPink-600 via-neonPink-500 to-mysticGold-400 text-white font-bold px-4 py-2 rounded-full hover:brightness-110 transition shadow-[0_0_20px_rgba(255,42,141,0.4)] flex items-center gap-2">
+                    <i class="fa-solid fa-crystal-ball text-xs"></i> დღის ბარათი
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MOON PHASES ILLUSTRATION BANNER -->
+    <section class="relative z-10 bg-night-900/60 border-b border-neonPink-500/20 py-4 px-2">
+        <div class="max-w-6xl mx-auto">
+            <p class="text-center text-[11px] font-cinzel text-neonPink-400/90 tracking-widest uppercase mb-3 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-sparkles text-mysticGold-400"></i> მთვარის ფაზების მისტიკური ციკლი <i class="fa-solid fa-sparkles text-mysticGold-400"></i>
+            </p>
+
+            <div class="grid grid-cols-4 sm:grid-cols-8 gap-2 text-center">
+                <!-- Moon 1 -->
+                <div class="flex flex-col items-center group cursor-pointer" title="ახალი მთვარე">
+                    <div class="w-9 h-9 rounded-full bg-void border border-neonPink-500/40 flex items-center justify-center shadow-[0_0_10px_rgba(10,3,20,0.8)] group-hover:border-neonPink-400 group-hover:scale-110 transition">
+                        <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-black to-night-800"></div>
+                    </div>
+                    <span class="text-[10px] text-gray-400 mt-1 font-sans">ახალი მთვარე</span>
+                </div>
+                <!-- Moon 2 -->
+                <div class="flex flex-col items-center group cursor-pointer" title="მზარდი ნამგალი">
+                    <div class="w-9 h-9 rounded-full bg-void border border-neonPink-500/40 flex items-center justify-center shadow-[0_0_10px_rgba(10,3,20,0.8)] group-hover:border-neonPink-400 group-hover:scale-110 transition">
+                        <div class="w-7 h-7 rounded-full bg-night-800 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 w-3.5 h-7 bg-mysticGold-300 rounded-r-full opacity-80"></div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-gray-400 mt-1 font-sans">მზარდი ნამგალი</span>
+                </div>
+                <!-- Moon 3 -->
+                <div class="flex flex-col items-center group cursor-pointer" title="პირველი მეოთხედი">
+                    <div class="w-9 h-9 rounded-full bg-void border border-neonPink-500/40 flex items-center justify-center shadow-[0_0_10px_rgba(10,3,20,0.8)] group-hover:border-neonPink-400 group-hover:scale-110 transition">
+                        <div class="w-7 h-7 rounded-full bg-night-800 relative overflow-hidden flex">
+                            <div class="w-3.5 h-7 bg-night-900"></div>
+                            <div class="w-3.5 h-7 bg-mysticGold-300"></div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-gray-400 mt-1 font-sans">1-ლი მეოთხედი</span>
+                </div>
+                <!-- Moon 4 -->
+                <div class="flex flex-col items-center group cursor-pointer" title="მზარდი მთვარე">
+                    <div class="w-9 h-9 rounded-full bg-void border border-neonPink-500/40 flex items-center justify-center shadow-[0_0_10px_rgba(10,3,20,0.8)] group-hover:border-neonPink-400 group-hover:scale-110 transition">
+                        <div class="w-7 h-7 rounded-full bg-mysticGold-300 relative overflow-hidden">
+                            <div class="absolute left-0 top-0 w-2 h-7 bg-night-900 rounded-l-full"></div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-gray-400 mt-1 font-sans">მზარდი მთვარე</span>
+                </div>
+                <!-- Moon 5 -->
+                <div class="flex flex-col items-center group cursor-pointer" title="სავსემთვარეობა">
+                    <div class="w-9 h-9 rounded-full bg-void border-2 border-mysticGold-400 flex items-center justify-center shadow-[0_0_18px_rgba(251,191,36,0.6)] group-hover:scale-110 transition">
+                        <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-mysticGold-300 via-amber-100 to-white shadow-[inset_0_0_10px_rgba(251,191,36,0.8)]"></div>
+                    </div>
+                    <span class="text-[10px] font-bold text-mysticGold-300 mt-1 font-sans">სავსემთვარეობა</span>
+                </div>
+                <!-- Moon 6 -->
+                <div class="flex flex-col items-center group cursor-pointer" title="კლებადი მთვარე">
+                    <div class="w-9 h-9 rounded-full bg-void border border-neonPink-500/40 flex items-center justify-center shadow-[0_0_10px_rgba(10,3,20,0.8)] group-hover:border-neonPink-400 group-hover:scale-110 transition">
+                        <div class="w-7 h-7 rounded-full bg-mysticGold-300 relative overflow-hidden">
+                            <div class="absolute right-0 top-0 w-2 h-7 bg-night-900 rounded-r-full"></div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-gray-400 mt-1 font-sans">კლებადი მთვარე</span>
+                </div>
+                <!-- Moon 7 -->
+                <div class="flex flex-col items-center group cursor-pointer" title="ბოლო მეოთხედი">
+                    <div class="w-9 h-9 rounded-full bg-void border border-neonPink-500/40 flex items-center justify-center shadow-[0_0_10px_rgba(10,3,20,0.8)] group-hover:border-neonPink-400 group-hover:scale-110 transition">
+                        <div class="w-7 h-7 rounded-full bg-night-800 relative overflow-hidden flex">
+                            <div class="w-3.5 h-7 bg-mysticGold-300"></div>
+                            <div class="w-3.5 h-7 bg-night-900"></div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-gray-400 mt-1 font-sans">ბოლო მეოთხედი</span>
+                </div>
+                <!-- Moon 8 -->
+                <div class="flex flex-col items-center group cursor-pointer" title="კლებადი ნამგალი">
+                    <div class="w-9 h-9 rounded-full bg-void border border-neonPink-500/40 flex items-center justify-center shadow-[0_0_10px_rgba(10,3,20,0.8)] group-hover:border-neonPink-400 group-hover:scale-110 transition">
+                        <div class="w-7 h-7 rounded-full bg-night-800 relative overflow-hidden">
+                            <div class="absolute left-0 top-0 w-3.5 h-7 bg-mysticGold-300 rounded-l-full opacity-80"></div>
+                        </div>
+                    </div>
+                    <span class="text-[10px] text-gray-400 mt-1 font-sans">კლებადი ნამგალი</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN CONTAINER -->
+    <main class="relative z-10 flex-grow max-w-7xl w-full mx-auto px-4 py-8">
+
+        <!-- SECTION 1: DECK CATALOG LIBRARY -->
+        <section id="section-catalog" class="space-y-8">
+            <!-- Hero Header -->
+            <div class="text-center max-w-3xl mx-auto space-y-3 pt-2">
+                <span class="px-3 py-1 rounded-full text-xs font-bold bg-neonPink-500/10 border border-neonPink-500/30 text-neonPink-400 uppercase tracking-widest">
+                    Rider-Waite კლასიკური არკანები
+                </span>
+                <h2 class="text-3xl md:text-5xl font-black font-cinzel gradient-title">ტაროს საიდუმლო ბიბლიოთეკა</h2>
+                <p class="text-gray-300 text-xs md:text-sm leading-relaxed max-w-2xl mx-auto">
+                    შეიცანით სამყაროს არქეტიპები, ასტროლოგიური კავშირები და ქვეცნობიერის სიმბოლიკა. აირჩიეთ ნებისმიერი ბარათი მისი სიღრმისეული მნიშვნელობის გასაგებად.
+                </p>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="glass-card rounded-2xl p-4 md:p-6 space-y-4 border border-neonPink-500/30">
+                <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                    
+                    <!-- Search Input -->
+                    <div class="relative w-full md:w-80">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-neonPink-400"></i>
+                        <input type="text" id="search-input" onkeyup="filterCards()" placeholder="მოძებნე ბარათი ან საკვანძო სიტყვა..." 
+                            class="w-full bg-void/90 border border-neonPink-500/40 rounded-xl pl-11 pr-4 py-2.5 text-xs md:text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-neonPink-400 focus:ring-1 focus:ring-neonPink-400 transition">
+                    </div>
+
+                    <!-- Suit Filter Buttons -->
+                    <div class="flex flex-wrap gap-2 justify-center w-full md:w-auto" id="suit-filters">
+                        <button onclick="setFilter('all')" class="filter-btn active-filter px-3.5 py-2 rounded-xl text-xs font-bold transition border border-neonPink-500 bg-neonPink-500/20 text-neonPink-300 shadow-[0_0_10px_rgba(236,72,153,0.3)]">ყველა</button>
+                        <button onclick="setFilter('major')" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-bold transition border border-neonPink-500/20 bg-void/80 text-gray-400 hover:text-neonPink-300 hover:border-neonPink-500/50">მაჟორული არკანები</button>
+                        <button onclick="setFilter('wands')" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-bold transition border border-neonPink-500/20 bg-void/80 text-gray-400 hover:text-neonPink-300 hover:border-neonPink-500/50">კვერთხები (Wands)</button>
+                        <button onclick="setFilter('cups')" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-bold transition border border-neonPink-500/20 bg-void/80 text-gray-400 hover:text-neonPink-300 hover:border-neonPink-500/50">თასები (Cups)</button>
+                        <button onclick="setFilter('swords')" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-bold transition border border-neonPink-500/20 bg-void/80 text-gray-400 hover:text-neonPink-300 hover:border-neonPink-500/50">ხმლები (Swords)</button>
+                        <button onclick="setFilter('pentacles')" class="filter-btn px-3.5 py-2 rounded-xl text-xs font-bold transition border border-neonPink-500/20 bg-void/80 text-gray-400 hover:text-neonPink-300 hover:border-neonPink-500/50">პენტაკლები (Pentacles)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cards Catalog Grid -->
+            <div id="cards-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+                <!-- Cards dynamically populated via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION 2: TAROT SPREAD READING -->
+        <section id="section-spread" class="hidden space-y-8 py-4">
+            
+            <!-- Spread Selector Banner -->
+            <div class="text-center max-w-3xl mx-auto space-y-3">
+                <h2 class="text-3xl md:text-5xl font-black font-cinzel gradient-title">ონლაინ გაშლა</h2>
+                <p class="text-gray-300 text-xs md:text-sm">
+                    მოახდინეთ კონცენტრაცია თქვენს შეკითხვაზე. აირჩიეთ სასურველი გაშლის ფორმატი და გახსენით ბარათები.
+                </p>
+
+                <!-- Spread Mode Toggle -->
+                <div class="inline-flex p-1 bg-void/90 rounded-full border border-neonPink-500/40 my-2">
+                    <button id="mode-3-btn" onclick="setSpreadMode(3)" class="px-5 py-2 rounded-full text-xs font-bold transition bg-neonPink-500 text-white shadow-[0_0_12px_rgba(236,72,153,0.5)]">
+                        3 ბარათი (წარსული • აწმყო • მომავალი)
+                    </button>
+                    <button id="mode-1-btn" onclick="setSpreadMode(1)" class="px-5 py-2 rounded-full text-xs font-bold transition text-gray-400 hover:text-neonPink-300">
+                        1 ბარათი (დღის რჩევა)
+                    </button>
+                </div>
+
+                <div>
+                    <button onclick="resetSpread()" class="mt-2 bg-night-800 border border-mysticGold-400/60 hover:bg-mysticGold-400 hover:text-void text-mysticGold-300 px-6 py-2 rounded-full text-xs font-bold transition shadow-lg inline-flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> ბარათების ხელახლა არევა
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3-Card Spread Layout Container -->
+            <div id="spread-container-3" class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto pt-4">
+                
+                <!-- Slot 1: Past -->
+                <div class="flex flex-col items-center">
+                    <span class="text-neonPink-400 font-cinzel font-bold text-sm mb-2 tracking-widest uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-hourglass-start text-xs"></i> I. წარსული
+                    </span>
+                    <div id="slot-0" onclick="pickSpreadCard(0)" class="w-52 h-80 rounded-2xl glass-card border-2 border-dashed border-neonPink-500/40 hover:border-neonPink-400 cursor-pointer flex flex-col items-center justify-center p-3 transition-all hover:scale-105 shadow-2xl group">
+                        <i class="fa-solid fa-eye text-3xl text-neonPink-500/50 group-hover:text-neonPink-400 group-hover:scale-110 transition mb-2"></i>
+                        <span class="text-xs text-gray-400 font-semibold group-hover:text-neonPink-200">გახსენით ბარათი</span>
+                    </div>
+                    <div id="slot-desc-0" class="mt-3 text-center min-h-[90px] text-xs text-gray-300 px-2"></div>
+                </div>
+
+                <!-- Slot 2: Present -->
+                <div class="flex flex-col items-center">
+                    <span class="text-neonPink-400 font-cinzel font-bold text-sm mb-2 tracking-widest uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-sun text-xs"></i> II. აწმყო
+                    </span>
+                    <div id="slot-1" onclick="pickSpreadCard(1)" class="w-52 h-80 rounded-2xl glass-card border-2 border-dashed border-neonPink-500/40 hover:border-neonPink-400 cursor-pointer flex flex-col items-center justify-center p-3 transition-all hover:scale-105 shadow-2xl group">
+                        <i class="fa-solid fa-wand-magic-sparkles text-3xl text-neonPink-500/50 group-hover:text-neonPink-400 group-hover:scale-110 transition mb-2"></i>
+                        <span class="text-xs text-gray-400 font-semibold group-hover:text-neonPink-200">გახსენით ბარათი</span>
+                    </div>
+                    <div id="slot-desc-1" class="mt-3 text-center min-h-[90px] text-xs text-gray-300 px-2"></div>
+                </div>
+
+                <!-- Slot 3: Future -->
+                <div class="flex flex-col items-center">
+                    <span class="text-neonPink-400 font-cinzel font-bold text-sm mb-2 tracking-widest uppercase flex items-center gap-2">
+                        <i class="fa-solid fa-moon text-xs"></i> III. მომავალი
+                    </span>
+                    <div id="slot-2" onclick="pickSpreadCard(2)" class="w-52 h-80 rounded-2xl glass-card border-2 border-dashed border-neonPink-500/40 hover:border-neonPink-400 cursor-pointer flex flex-col items-center justify-center p-3 transition-all hover:scale-105 shadow-2xl group">
+                        <i class="fa-solid fa-crystal-ball text-3xl text-neonPink-500/50 group-hover:text-neonPink-400 group-hover:scale-110 transition mb-2"></i>
+                        <span class="text-xs text-gray-400 font-semibold group-hover:text-neonPink-200">გახსენით ბარათი</span>
+                    </div>
+                    <div id="slot-desc-2" class="mt-3 text-center min-h-[90px] text-xs text-gray-300 px-2"></div>
+                </div>
+
+            </div>
+
+            <!-- 1-Card Spread Layout Container -->
+            <div id="spread-container-1" class="hidden flex-col items-center max-w-md mx-auto pt-4">
+                <span class="text-mysticGold-300 font-cinzel font-bold text-base mb-2 tracking-widest uppercase flex items-center gap-2">
+                    <i class="fa-solid fa-star text-xs"></i> დღის რჩევა & მანიფესტაცია
+                </span>
+                <div id="slot-single" onclick="pickSpreadCard('single')" class="w-56 h-88 rounded-2xl glass-card border-2 border-dashed border-mysticGold-400/50 hover:border-mysticGold-300 cursor-pointer flex flex-col items-center justify-center p-3 transition-all hover:scale-105 shadow-2xl group">
+                    <i class="fa-solid fa-gem text-4xl text-mysticGold-400/60 group-hover:text-mysticGold-300 group-hover:scale-110 transition mb-3"></i>
+                    <span class="text-xs text-gray-300 font-semibold group-hover:text-white">აირჩიეთ დღის ბარათი</span>
+                </div>
+                <div id="slot-desc-single" class="mt-4 text-center text-sm text-gray-300 px-4"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- CARD DETAIL MODAL -->
+    <div id="card-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-void/90 backdrop-blur-xl overflow-y-auto">
+        <div class="relative glass-card border-2 border-neonPink-500/60 rounded-3xl max-w-4xl w-full p-6 md:p-8 shadow-[0_0_50px_rgba(255,42,141,0.3)] my-8">
+            
+            <!-- Close Button -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-void/80 border border-neonPink-500/50 text-neonPink-400 hover:bg-neonPink-500 hover:text-white flex items-center justify-center transition z-20">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <!-- Modal Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-start">
+                
+                <!-- Left: Card Illustration Art -->
+                <div class="md:col-span-5 flex flex-col items-center">
+                    <div class="tarot-img-wrapper w-60 h-96 shadow-[0_0_25px_rgba(236,72,153,0.4)]">
+                        <img id="modal-card-image" src="" alt="Tarot Card" class="w-full h-full object-cover">
+                    </div>
+                    
+                    <div class="mt-4 w-full flex flex-wrap gap-2 justify-center" id="modal-tags">
+                        <!-- Keyword tags inserted here -->
+                    </div>
+                </div>
+
+                <!-- Right: Detailed Meaning -->
+                <div class="md:col-span-7 space-y-5 text-gray-200">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span id="modal-card-number" class="text-xs font-bold px-2.5 py-0.5 rounded bg-neonPink-500/20 text-neonPink-300 border border-neonPink-500/40 font-cinzel"></span>
+                            <span id="modal-card-suit" class="text-xs text-mysticGold-300 uppercase tracking-widest font-cinzel font-bold"></span>
+                        </div>
+                        <h2 id="modal-card-title-ka" class="text-2xl md:text-3xl font-black font-cinzel gradient-title"></h2>
+                        <h3 id="modal-card-title-en" class="text-xs italic text-gray-400 font-serif"></h3>
+                    </div>
+
+                    <!-- General Overview -->
+                    <div class="border-t border-neonPink-500/20 pt-3">
+                        <h4 class="text-xs font-bold text-neonPink-400 uppercase tracking-wider mb-1 flex items-center gap-2">
+                            <i class="fa-solid fa-compass"></i> ზოგადი სიმბოლიკა & მნიშვნელობა
+                        </h4>
+                        <p id="modal-overview" class="text-xs md:text-sm leading-relaxed text-gray-300 font-sans"></p>
+                    </div>
+
+                    <!-- Upright vs Reversed Meanings -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="bg-void/70 border border-emerald-500/40 rounded-xl p-3">
+                            <h5 class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-arrow-up"></i> პირდაპირი
+                            </h5>
+                            <p id="modal-upright" class="text-xs text-gray-300 leading-relaxed"></p>
+                        </div>
+                        <div class="bg-void/70 border border-rose-500/40 rounded-xl p-3">
+                            <h5 class="text-xs font-bold text-rose-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-arrow-down"></i> ამოყირავებული
+                            </h5>
+                            <p id="modal-reversed" class="text-xs text-gray-300 leading-relaxed"></p>
+                        </div>
+                    </div>
+
+                    <!-- Astro & Advice -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 border-t border-neonPink-500/20 pt-3">
+                        <div>
+                            <h4 class="text-xs font-bold text-mysticGold-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-star"></i> ასტროლოგია / ელემენტი
+                            </h4>
+                            <p id="modal-astro" class="text-xs text-gray-300"></p>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold text-neonPink-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-lightbulb"></i> ბარათის რჩევა
+                            </h4>
+                            <p id="modal-advice" class="text-xs text-gray-300 italic"></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="relative z-10 border-t border-neonPink-500/20 bg-void/90 py-6 text-center text-xs text-gray-500">
+        <p class="font-cinzel tracking-widest text-neonPink-400 mb-1">TAROT BOOK GUIDE & MYSTICAL DISCOVERY</p>
+        <p class="text-[11px]">კლასიკური Rider-Waite ილუსტრაციებითა და ასტროლოგიური სიმბოლიკით</p>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // RIDER-WAITE CLASSICAL TAROT DATASET WITH HIGH-QUALITY WIKIMEDIA COMMONS ARTWORK
+        const TAROT_DATA = [
+            {
+                id: '0',
+                number: '0',
+                nameKa: 'სულელი',
+                nameEn: 'The Fool',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/9/90/RWS_Tarot_00_Fool.jpg',
+                keywords: ['ახალი დასაწყისი', 'თავისუფლება', 'სპონტანურობა', 'რწმენა'],
+                overview: 'სულელი ასახავს ახალი მოგზაურობის დასაწყისს, ბრმა ნდობასა და უსაზღვრო პოტენციალს. ის არის სული, რომელიც მზად არის გადახტეს უფსკრულში ახალი გამოცდილების მისაღებად.',
+                upright: 'ახალი შესაძლებლობები, თავგადასავალი, რისკი, თავისუფლება, ინტუიციის ნდობა.',
+                reversed: 'გააზრებულობის ნაკლებობა, სიშტერე, უპასუხისმგებლობა, შიში წინ სვლის წინაშე.',
+                astro: 'ჰაერის ელემენტი / ურანი',
+                advice: 'გადადგით ნაბიჯი შიშის გარეშე. ენდეთ სამყაროს და დაიწყეთ სუფთა ფურცლიდან.'
+            },
+            {
+                id: '1',
+                number: 'I',
+                nameKa: 'მაგი',
+                nameEn: 'The Magician',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/d/de/RWS_Tarot_01_Magician.jpg',
+                keywords: ['მანიფესტაცია', 'ძალაუფლება', 'ოსტატობა', 'ნებისყოფა'],
+                overview: 'მაგი ფლობს ოთხივე ელემენტის ინსტრუმენტს. ის არის იდეების რეალობად ქცევის, კონცენტრაციისა და პოტენციალის რეალიზაციის სიმბოლო.',
+                upright: 'მიზნების მიღწევა, ნებისყოფა, რესურსების ეფექტურად გამოყენება, ახალი პროექტი.',
+                reversed: 'მანიპულაცია, ტყუილი, შესაძლებლობების ფანტვა, დაბალი თვითშეფასება.',
+                astro: 'მერკური',
+                advice: 'თქვენ გაქვთ ყველა საჭირო ინსტრუმენტი. იმოქმედეთ და აქციეთ იდეა რეალობად.'
+            },
+            {
+                id: '2',
+                number: 'II',
+                nameKa: 'ქურუმი ქალი',
+                nameEn: 'The High Priestess',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/8/88/RWS_Tarot_02_High_Priestess.jpg',
+                keywords: ['ინტუიცია', 'საიდუმლო', 'ქვეცნობიერი', 'სიბრძნე'],
+                overview: 'ქურუმი ქალი იცავს ფარულ ცოდნასა და შინაგან სიბრძნეს. ის მოუწოდებს შინაგანი ხმის მოსმენისა და საიდუმლოებების წვდომისკენ.',
+                upright: 'ძლიერი ინტუიცია, ფარული სიმართლის აღმოჩენა, სიჩუმე, სულიერი სიბრძნე.',
+                reversed: 'ზედაპირულობა, შინაგანი ხმის იგნორირება, საიდუმლოებების გამჟღავნება.',
+                astro: 'მთვარე',
+                advice: 'ნუ იჩქარებთ მოქმედებას. დაუკვირდით ნიშნებს და ენდეთ საკუთარ წინათგრძნობას.'
+            },
+            {
+                id: '3',
+                number: 'III',
+                nameKa: 'იმპერატორი ქალი',
+                nameEn: 'The Empress',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/d/d2/RWS_Tarot_03_Empress.jpg',
+                keywords: ['ნაყოფიერება', 'სიუხვეთ', 'ბუნება', 'ზრუნვა'],
+                overview: 'იმპერატორი ქალი წარმოადგენს დედა ბუნებას, სილამაზეს, სიუხვესა და შემოქმედებით ენერგიას. ის არის მატერიალური და სულიერი ყვავილობა.',
+                upright: 'სიუხვეთ, ოჯახური ჰარმონია, შემოქმედებითი აღმავლობა, კომფორტი.',
+                reversed: 'დამოკიდებულება, შემოქმედებითი ბლოკი, უყურადღებობა, ფინანსური არასტაბილურობა.',
+                astro: 'ვენერა',
+                advice: 'იზრუნეთ საკუთარ თავსა და გარშემომყოფებზე. მიეცით საშუალება თქვენს იდეებს დამწიფდეს.'
+            },
+            {
+                id: '4',
+                number: 'IV',
+                nameKa: 'იმპერატორი',
+                nameEn: 'The Emperor',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/c/c3/RWS_Tarot_04_Emperor.jpg',
+                keywords: ['სტრუქტურა', 'ავტორიტეტი', 'დისციპლინა', 'სტაბილურობა'],
+                overview: 'იმპერატორი არის წესრიგის, კანონის, ლიდერობისა და მყარი საფუძვლის სიმბოლო. ის ქმნის საზღვრებს და მართავს გონებით.',
+                upright: 'ლიდერობა, სტრუქტურირებული გეგმა, სტაბილურობა, პასუხისმგებლობა.',
+                reversed: 'ტირანია, მოქნილობის ნაკლებობა, კონტროლის დაკარგვა, ქაოსი.',
+                astro: 'ვერძი',
+                advice: 'დაამყარეთ წესრიგი თქვენს ცხოვრებაში. იმოქმედეთ სტრატეგიულად და მტკიცედ.'
+            },
+            {
+                id: '5',
+                number: 'V',
+                nameKa: 'იეროფანტი',
+                nameEn: 'The Hierophant',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/8/8d/RWS_Tarot_05_Hierophant.jpg',
+                keywords: ['ტრადიცია', 'მოძღვარი', 'რწმენა', 'განათლება'],
+                overview: 'იეროფანტი წარმოადგენს ტრადიციულ ღირებულებებს, სულიერ მოძღვრებასა და საზოგადოებრივ ნორმებს. ის არის ხიდი ღვთაებრივსა და ადამიანს შორის.',
+                upright: 'ტრადიციების პატივისცემა, სწავლა, სულიერი წინამძღოლობა, ქორწინება.',
+                reversed: 'დოგმატურობა, ამბოხი, მოძველებული წესების მსხვრევა, არატრადიციული გზა.',
+                astro: 'კურო',
+                advice: 'მიმართეთ გამოცდილ ხალხს რჩევისთვის ან მიჰყევით გამოცდილ, აპრობირებულ გზას.'
+            },
+            {
+                id: '6',
+                number: 'VI',
+                nameKa: 'შეყვარებულები',
+                nameEn: 'The Lovers',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/3/3a/TheLovers.jpg',
+                keywords: ['სიყვარული', 'არჩევანი', 'ჰარმონია', 'ღირებულებები'],
+                overview: 'შეყვარებულები აღნიშნავს ღრმა კავშირს, ვნებასა და მნიშვნელოვან მორალურ არჩევანს ორ გზას შორის.',
+                upright: 'ურთიერთგაგება, სიყვარული, სწორი არჩევანი, შინაგანი ჰარმონია.',
+                reversed: 'კონფლიქტი, არასწორი არჩევანი, უთანხმოება, ღირებულებების აცდენა.',
+                astro: 'ტყუპები',
+                advice: 'გააკეთეთ არჩევანი გულითა და გონებით. იყავით ერთგული საკუთარი პრინციპების.'
+            },
+            {
+                id: '7',
+                number: 'VII',
+                nameKa: 'ეტლი',
+                nameEn: 'The Chariot',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/9/9b/RWS_Tarot_07_Chariot.jpg',
+                keywords: ['გამარჯვება', 'ნებისყოფა', 'მიზანდასახულობა', 'კონტროლი'],
+                overview: 'ეტლი სიმბოლოა დაბრკოლებების გადალახვის, საპირისპირო ძალების მართვისა და ტრიუმფალური წინსვლის.',
+                upright: 'მიზნის მიღწევა, წარმატება, დაბრკოლებების გადალახვა, თვითკონტროლი.',
+                reversed: 'მიმართულების დაკარგვა, აგრესია, კონტროლის დაკარგვა, დაბრკოლებები.',
+                astro: 'კირჩხიბი',
+                advice: 'შეინარჩუნეთ ფოკუსი და მართეთ სიტუაცია. გამარჯვება თქვენს ხელშია.'
+            },
+            {
+                id: '8',
+                number: 'VIII',
+                nameKa: 'ძალა',
+                nameEn: 'Strength',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/f/f5/RWS_Tarot_08_Strength.jpg',
+                keywords: ['შინაგანი ძალა', 'მოთმინება', 'სითბო', 'სიმშვიდე'],
+                overview: 'ძალა გვიჩვენებს, რომ ჭეშმარიტი ძალაუფლება არა უხეშ ძალაში, არამედ შინაგან სიმშვიდესა და მოთმინებაშია.',
+                upright: 'მოთმინება, შინაგანი სიმტკიცე, ვნებების დამოკიდებულება, თანაგრძნობა.',
+                reversed: 'ეჭვი საკუთარ თავში, სისუსტე, ბრაზის აფეთქება, შიში.',
+                astro: 'ლომი',
+                advice: 'გამოიჩინეთ სითბო და მოთმინება. აგრესიის ნაცვლად გამოიყენეთ რბილი ძალა.'
+            },
+            {
+                id: '9',
+                number: 'IX',
+                nameKa: 'განდეგილი',
+                nameEn: 'The Hermit',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/4/4d/RWS_Tarot_09_Hermit.jpg',
+                keywords: ['მარტოობა', 'შინაგანი ძიება', 'სიბრძნე', 'დაფიქრება'],
+                overview: 'განდეგილი შუქურასავით ანათებს გზას სიბნელეში. ის დროებით განმარტოებასა და საკუთარ სულში ჩაღრმავებას ითხოვს.',
+                upright: 'თვითანალიზი, სიმართლის ძიება, სულიერი პერიოდი, მარტოობა.',
+                reversed: 'იზოლაცია, მარტოობის შიში, სიჯიუტე, საზოგადოებისგან გაქცევა.',
+                astro: 'ქალწული',
+                advice: 'გამოყავით დრო საკუთარ თავთან მარტო დასარჩენად. პასუხები თქვენს შიგნითაა.'
+            },
+            {
+                id: '10',
+                number: 'X',
+                nameKa: 'ბედის ბორბალი',
+                nameEn: 'Wheel of Fortune',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/3/3c/RWS_Tarot_10_Wheel_of_Fortune.jpg',
+                keywords: ['ცვლილება', 'ბედისწერა', 'ციკლები', 'იღბალი'],
+                overview: 'ბედის ბორბალი გვახსენებს, რომ ცხოვრებაში ყველაფერი იცვლება. აღმავლობას დაცემა მოსდევს და პირიქით.',
+                upright: 'იღბალი, პოზიტიური ცვლილებები, ახალი ციკლი, კარმული მოვლენა.',
+                reversed: 'უიღბლობა, ცვლილებებისადმი წინააღმდეგობა, უარყოფითი ციკლი.',
+                astro: 'იუპიტერი',
+                advice: 'მიიღეთ ცვლილებები. გახსოვდეთ, რომ ცუდიც და კარგიც დროებითია.'
+            },
+            {
+                id: '11',
+                number: 'XI',
+                nameKa: 'სამართლიანობა',
+                nameEn: 'Justice',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/RWS_Tarot_11_Justice.jpg',
+                keywords: ['სამართლიანობა', 'სიმართლე', 'მიზეზ-შედეგი', 'ბალანსი'],
+                overview: 'სამართლიანობა ითხოვს ობიექტურობას, პასუხისმგებლობასა და სიმართლის თვალებში შეხედვას.',
+                upright: 'სამართლიანი გადაწყვეტილება, სიმართლე, იურიდიული წარმატება, პასუხისმგებლობა.',
+                reversed: 'უსამართლობა, ტყუილი, პასუხისმგებლობის არიდება, მიკერძოებულობა.',
+                astro: 'სასწორი',
+                advice: 'იყავით პატიოსანი საკუთარ თავთან და სხვებთან. იმოქმედეთ სამართლიანად.'
+            },
+            {
+                id: '12',
+                number: 'XII',
+                nameKa: 'ჩამოკიდებული',
+                nameEn: 'The Hanged Man',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/2/2b/RWS_Tarot_12_Hanged_Man.jpg',
+                keywords: ['მსხვერპლი', 'პაუზა', 'ახალი პერსპექტივა', 'დათმობა'],
+                overview: 'ჩამოკიდებული გვასწავლის გაჩერებას, სიტუაციის სხვა კუთხით დანახვას და დროებით დათმობას დიდის მისაღწევად.',
+                upright: 'პაუზა, ახალი ხედვა, სულიერი ტრანსფორმაცია, მსხვერპლშეწირვა.',
+                reversed: 'ამაო მსხვერპლი, უძრაობა, სიჯიუტე, დროის კარგვა.',
+                astro: 'ნეპტუნი / წყლის ელემენტი',
+                advice: 'შეაჩერეთ იძულებითი მოქმედებები. შეხედეთ სიტუაციას სრულიად განსხვავებული კუთხით.'
+            },
+            {
+                id: '13',
+                number: 'XIII',
+                nameKa: 'სიკვდილი',
+                nameEn: 'Death',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/d/d7/RWS_Tarot_13_Death.jpg',
+                keywords: ['ტრანსფორმაცია', 'დასასრული', 'ახალი დასაწყისი', 'გაშვება'],
+                overview: 'სიკვდილის ბარათი არ ნიშნავს ფიზიკურ სიკვდილს; ეს არის ძველის გარდაუვალი დასასრული ახლის დასაბადებლად.',
+                upright: 'ღრმა ტრანსფორმაცია, ძველის დასასრული, განთავისუფლება, რეგენერაცია.',
+                reversed: 'ცვლილებების შიში, წარსულზე ჩაფრენა, სტაგნაცია, მტკივნეული გაჭიანურება.',
+                astro: 'მორიელი',
+                advice: 'გაუშვით ის, რაც აღარ გემსახურებათ. გაათავისუფლეთ ადგილი ახალი ენერგიისთვის.'
+            },
+            {
+                id: '14',
+                number: 'XIV',
+                nameKa: 'ზომიერება',
+                nameEn: 'Temperance',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/f/f8/RWS_Tarot_14_Temperance.jpg',
+                keywords: ['ბალანსი', 'ზომიერება', 'ჰარმონია', 'მოთმინება'],
+                overview: 'ზომიერება არის შინაგანი მშვიდობის, ელემენტების შერწყმისა და ოქროს შუალედის პოვნის ხელოვნება.',
+                upright: 'ბალანსი, სულიერი სიმშვიდე, კომპრომისი, ჯანმრთელობის აღდგენა.',
+                reversed: 'უკიდურესობები, დისბალანსი, კონფლიქტი, მოუთმენლობა.',
+                astro: 'მშვილდოსანი',
+                advice: 'ერიდეთ უკიდურესობებს. იპოვეთ ბალანსი და იმოქმედეთ მშვიდად.'
+            },
+            {
+                id: '15',
+                number: 'XV',
+                nameKa: 'ეშმაკი',
+                nameEn: 'The Devil',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/5/55/RWS_Tarot_15_Devil.jpg',
+                keywords: ['მიჯაჭვულობა', 'ცდუნება', 'ილუზია', 'მატერიალიზმი'],
+                overview: 'ეშმაკი ასახავს მავნე ჩვევებს, ილუზიებსა და შიშებს, რომლებიც გვზღუდავენ და გვინარჩუნებენ ტყვეობაში.',
+                upright: 'დამოკიდებულება, ცდუნება, მატერიალური ტყვეობა, ჩახლართული ურთიერთობა.',
+                reversed: 'შეზღუდვებისგან გათავისუფლება, გაცნობიერება, ცუდი ჩვევების დაძლევა.',
+                astro: 'თხის რქა',
+                advice: 'გააცნობიერეთ, რა გზღუდავთ. ჯაჭვები ილუზორულია — თქვენ გაქვთ გათავისუფლების ძალა.'
+            },
+            {
+                id: '16',
+                number: 'XVI',
+                nameKa: 'კოშკი',
+                nameEn: 'The Tower',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/5/53/RWS_Tarot_16_Tower.jpg',
+                keywords: ['უეცარი ცვლილება', 'ილუზიების მსხვრევა', 'კათარსისი'],
+                overview: 'კოშკი სიმბოლოა ყალბი საძირკვლის უეცარი დანგრევის, რაც თავიდან შოკისმომგვრელია, თუმცა აუცილებელია სიმართლისთვის.',
+                upright: 'უეცარი შოკი, ილუზიების მსხვრევა, რევოლუცია, განთავისუფლება.',
+                reversed: 'კატასტროფის აცილება, ცვლილებების გაჭიანურება, შიში.',
+                astro: 'მარსი',
+                advice: 'ნუ შეებრძოლებით ნგრევას. დანგრეულ საძირკველზე ააშენეთ ახალი, მყარი რეალობა.'
+            },
+            {
+                id: '17',
+                number: 'XVII',
+                nameKa: 'ვარსკვლავი',
+                nameEn: 'The Star',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/d/db/RWS_Tarot_17_Star.jpg',
+                keywords: ['იმედი', 'შთაგონება', 'სულიერი განკურნება', 'რწმენა'],
+                overview: 'კოშკის შტორმის შემდეგ მოდის ვარსკვლავის მშვიდი შუქი. ეს არის იმედის, განკურნებისა და ნათელი მომავლის რწმენა.',
+                upright: 'იმედი, შთაგონება, შინაგანი სიმშვიდე, სულიერი განახლება, იღბალი.',
+                reversed: 'უიმედობა, რწმენის დაკარგვა, პესიმიზმი, დეპრესიული განწყობა.',
+                astro: 'მერწყული',
+                advice: 'შეინარჩუნეთ რწმენა. თქვენ სწორ გზაზე ხართ და სამყარო გიჭერთ მხარს.'
+            },
+            {
+                id: '18',
+                number: 'XVIII',
+                nameKa: 'მთვარე',
+                nameEn: 'The Moon',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/7/7f/RWS_Tarot_18_Moon.jpg',
+                keywords: ['ილუზია', 'შიშები', 'ინტუიცია', 'სიზმრები'],
+                overview: 'მთვარე ანათებს ბუნდოვან გზას. ის ასახავს ჩვენს ფარულ შიშებს, ქვეცნობიერ აჩრდილებსა და ილუზიებს.',
+                upright: 'გაურკვევლობა, ძლიერი სიზმრები, შიშები, ილუზიები, ფარული მტრები.',
+                reversed: 'ბუნდოვანების გაფანტვა, შიშების დაძლევა, სიმართლის გამოაშკარავება.',
+                astro: 'თევზები',
+                advice: 'ნუ ირწმუნებთ ყველაფერს, რასაც ხედავთ. ენდეთ ინტუიციას ბუნდოვანებაში.'
+            },
+            {
+                id: '19',
+                number: 'XIX',
+                nameKa: 'მზე',
+                nameEn: 'The Sun',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/1/17/RWS_Tarot_19_Sun.jpg',
+                keywords: ['სიხარული', 'წარმატება', 'ენერგია', 'სინათლე'],
+                overview: 'მზე არის ყველაზე პოზიტიური ბარათი — სითბოს, სიხარულის, სიცხადისა და აბსოლუტური ტრიუმფის წყარო.',
+                upright: 'სრული წარმატება, სიხარული, ჯანმრთელობა, ოპტიმიზმი, სიცხადე.',
+                reversed: 'დროებითი მოწყენილობა, გადაჭარბებული ოპტიმიზმი, ენერგიის ნაკლებობა.',
+                astro: 'მზე',
+                advice: 'გაიხარეთ აწმყოთი. იბრწყინეთ და გაუზიარეთ თქვენი სითბო გარშემომყოფებს.'
+            },
+            {
+                id: '20',
+                number: 'XX',
+                nameKa: 'სამსჯავრო',
+                nameEn: 'Judgement',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/d/dd/RWS_Tarot_20_Judgement.jpg',
+                keywords: ['აღორძინება', 'ხმობა', 'პატიება', 'გაღვიძება'],
+                overview: 'სამსჯავრო უხმობს სულს გაღვიძებისკენ. ეს არის წარსულის გააზრება, პატიება და ახალ საფეხურზე გადასვლა.',
+                upright: 'სულიერი გაღვიძება, მნიშვნელოვანი გადაწყვეტილება, წარსულის გაშვება.',
+                reversed: 'თვითკრიტიკა, სინანული, შანსის ხელიდან გაშვება, ეჭვები.',
+                astro: 'პლუტონი / ცეცხლის ელემენტი',
+                advice: 'მიიღეთ თქვენი წარსული გამოცდილება, აპატიეთ საკუთარ თავს და გადადით ახალ ეტაპზე.'
+            },
+            {
+                id: '21',
+                number: 'XXI',
+                nameKa: 'სამყარო',
+                nameEn: 'The World',
+                suit: 'major',
+                suitKa: 'მაჟორული არკანი',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/f/ff/RWS_Tarot_21_World.jpg',
+                keywords: ['სრულყოფილება', 'დასრულება', 'მიღწევა', 'მოგზაურობა'],
+                overview: 'სამყარო აღნიშნავს დიდი ციკლის წარმატებით დასრულებას, ჰარმონიასა და სრულყოფილებას.',
+                upright: 'მიზნის მიღწევა, ციკლის დასრულება, აღიარება, მოგზაურობა, სავსეობა.',
+                reversed: 'დაუსრულებელი საქმე, სტაგნაცია, მიზანთან ახლოს გაჩერება.',
+                astro: 'სატურნი / მიწის ელემენტი',
+                advice: 'იზეიმეთ თქვენი მიღწევა. თქვენ დაასრულეთ მნიშვნელოვანი ეტაპი.'
+            },
+            
+            // MINOR ARCANA SELECTION
+            {
+                id: 'w1',
+                number: 'ტუზი',
+                nameKa: 'კვერთხების ტუზი',
+                nameEn: 'Ace of Wands',
+                suit: 'wands',
+                suitKa: 'კვერთხები (ცეცხლი)',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/1/11/Wands01.jpg',
+                keywords: ['ინსპირაცია', 'ენერგია', 'ვნება', 'ახალი პროექტი'],
+                overview: 'კვერთხების ტუზი ასახავს ცეცხლოვან ენერგიას, ახალ შემოქმედებით ტალღასა და ვნებას.',
+                upright: 'ახალი იდეა, ენთუზიაზმი, შემოქმედებითი იმპულსი, მოტივაცია.',
+                reversed: 'ენერგიის ნაკლებობა, დაყოვნება, მოტივაციის დაკარგვა, ბლოკი.',
+                astro: 'ცეცხლის ელემენტი',
+                advice: 'მიჰყევით თქვენს ვნებას. დაიწყეთ ახალი საქმე შეყოვნების გარეშე.'
+            },
+            {
+                id: 'wk',
+                number: 'მეფე',
+                nameKa: 'კვერთხების მეფე',
+                nameEn: 'King of Wands',
+                suit: 'wands',
+                suitKa: 'კვერთხები (ცეცხლი)',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/c/ce/Wands14.jpg',
+                keywords: ['ლიდერობა', 'ხედვა', 'მეწარმეობა', 'ქარიზმა'],
+                overview: 'კვერთხების მეფე არის ცეცხლოვანი წინამძღოლი, რომელიც შთააგონებს სხვებს თავისი ხედვითა და ენერგიით.',
+                upright: 'ქარიზმატული ლიდერობა, დიდი მიზნები, გაბედულება, წარმატება.',
+                reversed: 'იმპულსურობა, აგრესიული მართვა, მაღალი ამბიციები დაფარვის გარეშე.',
+                astro: 'ლომი / ცეცხლი',
+                advice: 'უხელმძღვანელეთ პროცესს თავდაჯერებულად და იყავით მაგალითი სხვებისთვის.'
+            },
+            {
+                id: 'c1',
+                number: 'ტუზი',
+                nameKa: 'თასების ტუზი',
+                nameEn: 'Ace of Cups',
+                suit: 'cups',
+                suitKa: 'თასები (წყალი)',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/3/36/Cups01.jpg',
+                keywords: ['სიყვარული', 'ემოციები', 'ინტუიცია', 'სიუხვეთ'],
+                overview: 'თასების ტუზი არის ემოციური სავსეობის, ახალი სიყვარულისა და სულიერი ჰარმონიის წყარო.',
+                upright: 'ახალი სიყვარული, ემოციური განკურნება, სიხარული, შინაგანი მშვიდობა.',
+                reversed: 'ემოციური ბლოკირება, გულისტკივილი, დაუცველობა.',
+                astro: 'წყლის ელემენტი',
+                advice: 'გახსენით გული სიყვარულისთვის. მიიღეთ ემოციები შეკავების გარეშე.'
+            },
+            {
+                id: 'cq',
+                number: 'დედოფალი',
+                nameKa: 'თასების დედოფალი',
+                nameEn: 'Queen of Cups',
+                suit: 'cups',
+                suitKa: 'თასები (წყალი)',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/6/62/Cups13.jpg',
+                keywords: ['თანაგრძნობა', 'მზრუნველობა', 'ინტუიცია', 'ემოციურობა'],
+                overview: 'თასების დედოფალი ფლობს სიღრმისეულ ემპათიას, ინტუიციასა და სულიერ სითბოს.',
+                upright: 'ემოციური მხარდაჭერა, ინტუიციის ნდობა, ზრუნვა, ჰარმონია.',
+                reversed: 'ემოციური არასტაბილურობა, მანიპულაცია, გადაღლა.',
+                astro: 'კირჩხიბი / წყალი',
+                advice: 'მოუსმინეთ გულს და იყავით ლმობიერი საკუთარი ემოციების მიმართ.'
+            },
+            {
+                id: 's1',
+                number: 'ტუზი',
+                nameKa: 'ხმლების ტუზი',
+                nameEn: 'Ace of Swords',
+                suit: 'swords',
+                suitKa: 'ხმლები (ჰაერი)',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/1/1a/Swords01.jpg',
+                keywords: ['სიცხადე', 'სიმართლე', 'გონებრივი ძალა', 'გარღვევა'],
+                overview: 'ხმლების ტუზი არის გონების ჭრელი ალმასი, რომელიც ფანტავს ილუზიებს და ავლენს სიმართლეს.',
+                upright: 'აზროვნების სიცხადე, სიმართლის გაგება, სწორი გადაწყვეტილება, გარღვევა.',
+                reversed: 'ბუნდოვანება, მცდარი დასკვნები, კონფლიქტი, აზრების ქაოსი.',
+                astro: 'ჰაერის ელემენტი',
+                advice: 'ენდეთ ლოგიკასა და სიმართლეს. მიიღეთ ცივი და გააზრებული გადაწყვეტილება.'
+            },
+            {
+                id: 'sk',
+                number: 'რაინდი',
+                nameKa: 'ხმლების რაინდი',
+                nameEn: 'Knight of Swords',
+                suit: 'swords',
+                suitKa: 'ხმლები (ჰაერი)',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/b/b0/Swords12.jpg',
+                keywords: ['მოქმედება', 'სიჩქარე', 'ამბიცია', 'პირდაპირობა'],
+                overview: 'ხმლების რაინდი ელვისსისწრაფით მიისწრაფვის მიზნისკენ, გაბედულია და არ ერიდება დაბრკოლებებს.',
+                upright: 'სწრაფი მოქმედება, მიზანსწრაფულობა, სიმართლის თქმა, გარღვევა.',
+                reversed: 'სიჩქარე გააზრების გარეშე, აგრესია, უხეშობა, შეცდომები.',
+                astro: 'ტყუპები / ჰაერი',
+                advice: 'იმოქმედეთ სწრაფად, თუმცა ნუ დაკარგავთ გონებასა და ტაქტს.'
+            },
+            {
+                id: 'p1',
+                number: 'ტუზი',
+                nameKa: 'პენტაკლების ტუზი',
+                nameEn: 'Ace of Pentacles',
+                suit: 'pentacles',
+                suitKa: 'პენტაკლები (მიწა)',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Pentan01.jpg',
+                keywords: ['სიმდიდრე', 'შესაძლებლობა', 'სტაბილურობა', 'ბიზნესი'],
+                overview: 'პენტაკლების ტუზი ასახავს მატერიალურ შესაძლებლობებს, ფინანსურ წარმატებასა და მყარ საფუძველს.',
+                upright: 'ფინანსური შანსი, ახალი შემოსავალი, სტაბილურობა, ჯანმრთელობა.',
+                reversed: 'ხელიდან გაშვებული შანსი, ფინანსური რისკი, არასტაბილურობა.',
+                astro: 'მიწის ელემენტი',
+                advice: 'გამოიყენეთ მატერიალური შესაძლებლობა. ჩადეთ ინვესტიცია მომავალში.'
+            },
+            {
+                id: 'p10',
+                number: '10',
+                nameKa: 'პენტაკლების ათიანი',
+                nameEn: 'Ten of Pentacles',
+                suit: 'pentacles',
+                suitKa: 'პენტაკლები (მიწა)',
+                img: 'https://upload.wikimedia.org/wikipedia/commons/4/42/Pentan10.jpg',
+                keywords: ['ოჯახური სიმდიდრე', 'მემკვიდრეობა', 'სტაბილურობა', 'ტრადიცია'],
+                overview: 'პენტაკლების ათიანი არის ხანგრძლივი შრომის ნაყოფი, მატერიალური კეთილდღეობა და ოჯახური სიმყარე.',
+                upright: 'ფინანსური უსაფრთხოება, ოჯახური ჰარმონია, მემკვიდრეობა, სიმყარე.',
+                reversed: 'ფინანსური დავა, ოჯახური უთანხმოება, რისკი ქონებაზე.',
+                astro: 'ქალწული / მიწა',
+                advice: 'დააფასეთ ოჯახური ფესვები და იზრუნეთ გრძელვადიან სტაბილურობაზე.'
+            }
+        ];
+
+        // APP STATE
+        let currentSuitFilter = 'all';
+        let currentSearchQuery = '';
+        let spreadMode = 3; // 3 or 1
+        let selectedSpreadCards = [null, null, null];
+        let selectedSingleCard = null;
+
+        window.onload = function() {
+            initStarsCanvas();
+            renderCardsGrid();
+        };
+
+        // CANVAS BACKGROUND WITH TWINKLING STARS & SHOOTING STARS
+        function initStarsCanvas() {
+            const canvas = document.getElementById('stars-canvas');
+            const ctx = canvas.getContext('2d');
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            // Generate stars
+            const stars = Array.from({ length: 90 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2 + 0.5,
+                alpha: Math.random(),
+                speed: 0.005 + Math.random() * 0.012,
+                color: Math.random() > 0.4 ? '#ec4899' : '#fbbf24'
+            }));
+
+            // Shooting star
+            let shootingStar = null;
+            function spawnShootingStar() {
+                shootingStar = {
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * (canvas.height / 2),
+                    length: Math.random() * 80 + 40,
+                    speed: Math.random() * 8 + 6,
+                    dx: Math.random() * 4 + 4,
+                    dy: Math.random() * 2 + 2,
+                    alpha: 1
+                };
+            }
+            setInterval(spawnShootingStar, 4000);
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw Stars
+                stars.forEach(s => {
+                    s.alpha += s.speed;
+                    if (s.alpha > 1 || s.alpha < 0) s.speed = -s.speed;
+
+                    ctx.fillStyle = s.color;
+                    ctx.globalAlpha = Math.abs(s.alpha);
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                // Draw Shooting Star
+                if (shootingStar) {
+                    ctx.globalAlpha = shootingStar.alpha;
+                    ctx.strokeStyle = '#ff2a8d';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(shootingStar.x, shootingStar.y);
+                    ctx.lineTo(shootingStar.x - shootingStar.length, shootingStar.y - shootingStar.length / 2);
+                    ctx.stroke();
+
+                    shootingStar.x += shootingStar.speed;
+                    shootingStar.y += shootingStar.speed / 2;
+                    shootingStar.alpha -= 0.02;
+
+                    if (shootingStar.alpha <= 0) shootingStar = null;
+                }
+
+                ctx.globalAlpha = 1.0;
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        // SWITCH NAVIGATION SECTIONS
+        function switchSection(sectionId) {
+            document.getElementById('section-catalog').classList.add('hidden');
+            document.getElementById('section-spread').classList.add('hidden');
+
+            document.getElementById('nav-catalog').className = 'nav-btn text-gray-400 hover:text-neonPink-300 pb-1 px-3 py-1.5 transition-all flex items-center gap-2';
+            document.getElementById('nav-spread').className = 'nav-btn text-gray-400 hover:text-neonPink-300 pb-1 px-3 py-1.5 transition-all flex items-center gap-2';
+
+            if (sectionId === 'catalog') {
+                document.getElementById('section-catalog').classList.remove('hidden');
+                document.getElementById('nav-catalog').className = 'nav-btn text-neonPink-400 border-b-2 border-neonPink-500 pb-1 px-3 py-1.5 transition-all flex items-center gap-2';
+            } else {
+                document.getElementById('section-spread').classList.remove('hidden');
+                document.getElementById('nav-spread').className = 'nav-btn text-neonPink-400 border-b-2 border-neonPink-500 pb-1 px-3 py-1.5 transition-all flex items-center gap-2';
+            }
+        }
+
+        // RENDER DECK CATALOG
+        function renderCardsGrid() {
+            const grid = document.getElementById('cards-grid');
+            grid.innerHTML = '';
+
+            const filtered = TAROT_DATA.filter(card => {
+                const matchesSuit = (currentSuitFilter === 'all') || (card.suit === currentSuitFilter);
+                const q = currentSearchQuery.toLowerCase();
+                const matchesSearch = card.nameKa.toLowerCase().includes(q) ||
+                                      card.nameEn.toLowerCase().includes(q) ||
+                                      card.keywords.some(k => k.toLowerCase().includes(q));
+                return matchesSuit && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-gray-400 space-y-2">
+                        <i class="fa-solid fa-ghost text-4xl text-neonPink-400/50"></i>
+                        <p class="text-sm">ბარათი ვერ მოიძებნა...</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(card => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'glass-card rounded-2xl p-3 flex flex-col justify-between items-center text-center cursor-pointer group hover:-translate-y-2 transition-all duration-300 aspect-[2/3.3] relative overflow-hidden';
+                cardEl.onclick = () => openCardModal(card.id);
+
+                cardEl.innerHTML = `
+                    <div class="w-full flex justify-between items-center text-[10px] text-neonPink-400 font-cinzel font-bold mb-1">
+                        <span>${card.number}</span>
+                        <span class="text-mysticGold-300">${card.suitKa.split(' ')[0]}</span>
+                    </div>
+
+                    <div class="tarot-img-wrapper w-full h-44 mb-2">
+                        <img src="${card.img}" alt="${card.nameKa}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/200x320/130826/ff2a8d?text=Tarot+Card'">
+                    </div>
+
+                    <div class="w-full my-auto">
+                        <h3 class="font-bold text-xs md:text-sm text-gray-100 group-hover:text-neonPink-300 transition line-clamp-1">${card.nameKa}</h3>
+                        <p class="text-[10px] text-gray-400 italic">${card.nameEn}</p>
+                    </div>
+
+                    <div class="w-full text-[9px] text-neonPink-300/80 bg-void/80 py-1 px-1.5 rounded-lg border border-neonPink-500/20 truncate mt-1">
+                        ${card.keywords[0]} • ${card.keywords[1] || ''}
+                    </div>
+                `;
+
+                grid.appendChild(cardEl);
+            });
+        }
+
+        function setFilter(suit) {
+            currentSuitFilter = suit;
+            const buttons = document.querySelectorAll('#suit-filters .filter-btn');
+            buttons.forEach(btn => {
+                btn.className = 'filter-btn px-3.5 py-2 rounded-xl text-xs font-bold transition border border-neonPink-500/20 bg-void/80 text-gray-400 hover:text-neonPink-300 hover:border-neonPink-500/50';
+            });
+            event.target.className = 'filter-btn active-filter px-3.5 py-2 rounded-xl text-xs font-bold transition border border-neonPink-500 bg-neonPink-500/20 text-neonPink-300 shadow-[0_0_10px_rgba(236,72,153,0.3)]';
+            renderCardsGrid();
+        }
+
+        function filterCards() {
+            currentSearchQuery = document.getElementById('search-input').value;
+            renderCardsGrid();
+        }
+
+        // MODAL DISPLAY LOGIC
+        function openCardModal(cardId) {
+            const card = TAROT_DATA.find(c => c.id === cardId);
+            if (!card) return;
+
+            document.getElementById('modal-card-image').src = card.img;
+            document.getElementById('modal-card-number').innerText = card.number;
+            document.getElementById('modal-card-suit').innerText = card.suitKa;
+            document.getElementById('modal-card-title-ka').innerText = card.nameKa;
+            document.getElementById('modal-card-title-en').innerText = card.nameEn;
+            document.getElementById('modal-overview').innerText = card.overview;
+            document.getElementById('modal-upright').innerText = card.upright;
+            document.getElementById('modal-reversed').innerText = card.reversed;
+            document.getElementById('modal-astro').innerText = card.astro;
+            document.getElementById('modal-advice').innerText = card.advice;
+
+            const tagsContainer = document.getElementById('modal-tags');
+            tagsContainer.innerHTML = card.keywords.map(k => 
+                `<span class="text-[10px] bg-neonPink-500/10 text-neonPink-300 border border-neonPink-500/30 px-2.5 py-0.5 rounded-full font-semibold">${k}</span>`
+            ).join('');
+
+            document.getElementById('card-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('card-modal').classList.add('hidden');
+        }
+
+        function drawRandomCard() {
+            const idx = Math.floor(Math.random() * TAROT_DATA.length);
+            openCardModal(TAROT_DATA[idx].id);
+        }
+
+        // SPREAD READING LOGIC
+        function setSpreadMode(mode) {
+            spreadMode = mode;
+            if (mode === 3) {
+                document.getElementById('spread-container-3').classList.remove('hidden');
+                document.getElementById('spread-container-1').classList.add('hidden');
+                document.getElementById('mode-3-btn').className = 'px-5 py-2 rounded-full text-xs font-bold transition bg-neonPink-500 text-white shadow-[0_0_12px_rgba(236,72,153,0.5)]';
+                document.getElementById('mode-1-btn').className = 'px-5 py-2 rounded-full text-xs font-bold transition text-gray-400 hover:text-neonPink-300';
+            } else {
+                document.getElementById('spread-container-3').classList.add('hidden');
+                document.getElementById('spread-container-1').classList.remove('hidden');
+                document.getElementById('spread-container-1').classList.add('flex');
+                document.getElementById('mode-1-btn').className = 'px-5 py-2 rounded-full text-xs font-bold transition bg-neonPink-500 text-white shadow-[0_0_12px_rgba(236,72,153,0.5)]';
+                document.getElementById('mode-3-btn').className = 'px-5 py-2 rounded-full text-xs font-bold transition text-gray-400 hover:text-neonPink-300';
+            }
+            resetSpread();
+        }
+
+        function pickSpreadCard(slotIndex) {
+            if (slotIndex === 'single') {
+                if (selectedSingleCard) {
+                    openCardModal(selectedSingleCard.id);
+                    return;
+                }
+                const picked = TAROT_DATA[Math.floor(Math.random() * TAROT_DATA.length)];
+                selectedSingleCard = picked;
+
+                const slot = document.getElementById('slot-single');
+                slot.className = 'w-56 h-88 rounded-2xl glass-card border-2 border-mysticGold-400 cursor-pointer p-3 flex flex-col justify-between items-center transition-all hover:scale-105 shadow-[0_0_25px_rgba(251,191,36,0.4)]';
+                slot.innerHTML = `
+                    <div class="tarot-img-wrapper w-full h-64 mb-2">
+                        <img src="${picked.img}" alt="${picked.nameKa}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-center my-auto">
+                        <p class="font-bold text-sm text-mysticGold-300">${picked.nameKa}</p>
+                        <p class="text-[10px] text-gray-400">${picked.nameEn}</p>
+                    </div>
+                    <span class="text-[9px] text-neonPink-400 uppercase font-bold mt-1">დააჭირეთ დეტალებისთვის</span>
+                `;
+
+                document.getElementById('slot-desc-single').innerHTML = `
+                    <p class="font-bold text-mysticGold-300 text-xs mb-1">${picked.keywords.join(' • ')}</p>
+                    <p class="text-xs text-gray-300 leading-relaxed">${picked.upright}</p>
+                `;
+                return;
+            }
+
+            // 3-Card Slot
+            if (selectedSpreadCards[slotIndex]) {
+                openCardModal(selectedSpreadCards[slotIndex].id);
+                return;
+            }
+
+            const used = selectedSpreadCards.filter(Boolean).map(c => c.id);
+            const avail = TAROT_DATA.filter(c => !used.includes(c.id));
+            const picked = avail[Math.floor(Math.random() * avail.length)];
+            selectedSpreadCards[slotIndex] = picked;
+
+            const slot = document.getElementById(`slot-${slotIndex}`);
+            slot.className = 'w-52 h-80 rounded-2xl glass-card border-2 border-neonPink-500 cursor-pointer p-3 flex flex-col justify-between items-center transition-all hover:scale-105 shadow-[0_0_20px_rgba(255,42,141,0.4)]';
+            
+            slot.innerHTML = `
+                <div class="tarot-img-wrapper w-full h-56 mb-2">
+                    <img src="${picked.img}" alt="${picked.nameKa}" class="w-full h-full object-cover">
+                </div>
+                <div class="text-center my-auto">
+                    <p class="font-bold text-xs text-neonPink-300">${picked.nameKa}</p>
+                    <p class="text-[10px] text-gray-400 italic">${picked.nameEn}</p>
+                </div>
+                <span class="text-[9px] text-neonPink-400 uppercase font-bold mt-1">დეტალები</span>
+            `;
+
+            document.getElementById(`slot-desc-${slotIndex}`).innerHTML = `
+                <p class="font-bold text-neonPink-300 text-[11px] mb-1">${picked.keywords.join(' • ')}</p>
+                <p class="text-xs text-gray-300 line-clamp-2">${picked.upright}</p>
+            `;
+        }
+
+        function resetSpread() {
+            selectedSpreadCards = [null, null, null];
+            selectedSingleCard = null;
+
+            const icons = ['fa-hourglass-start', 'fa-sun', 'fa-moon'];
+
+            for (let i = 0; i < 3; i++) {
+                const slot = document.getElementById(`slot-${i}`);
+                if (slot) {
+                    slot.className = 'w-52 h-80 rounded-2xl glass-card border-2 border-dashed border-neonPink-500/40 hover:border-neonPink-400 cursor-pointer flex flex-col items-center justify-center p-3 transition-all hover:scale-105 shadow-2xl group';
+                    slot.innerHTML = `
+                        <i class="fa-solid ${icons[i]} text-3xl text-neonPink-500/50 group-hover:text-neonPink-400 group-hover:scale-110 transition mb-2"></i>
+                        <span class="text-xs text-gray-400 font-semibold group-hover:text-neonPink-200">გახსენით ბარათი</span>
+                    `;
+                    document.getElementById(`slot-desc-${i}`).innerHTML = '';
+                }
+            }
+
+            const slotSingle = document.getElementById('slot-single');
+            if (slotSingle) {
+                slotSingle.className = 'w-56 h-88 rounded-2xl glass-card border-2 border-dashed border-mysticGold-400/50 hover:border-mysticGold-300 cursor-pointer flex flex-col items-center justify-center p-3 transition-all hover:scale-105 shadow-2xl group';
+                slotSingle.innerHTML = `
+                    <i class="fa-solid fa-gem text-4xl text-mysticGold-400/60 group-hover:text-mysticGold-300 group-hover:scale-110 transition mb-3"></i>
+                    <span class="text-xs text-gray-300 font-semibold group-hover:text-white">აირჩიეთ დღის ბარათი</span>
+                `;
+                document.getElementById('slot-desc-single').innerHTML = '';
+            }
+        }
+    </script>
+</body>
+</html>
