@@ -1,0 +1,173 @@
+{
+  "title": {
+    "media": {
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/World_map_blank_without_borders.svg/1200px-World_map_blank_without_borders.svg.png",
+      "caption": "მსოფლიო ისტორია და ტექნოლოგიური პროგრესი",
+      "credit": "Wikimedia Commons"
+    },
+    "text": {
+      "headline": "კაცობრიობის ტექნოლოგიური ევოლუცია",
+      "text": "<p>ინტერაქტიული ქრონოლოგია, რომელიც მოიცავს კაცობრიობის ისტორიის 10 უმნიშვნელოვანეს ტექნოლოგიურ და კოსმოსურ მოვლენას.</p>"
+    }
+  },
+  "events": [
+    {
+      "media": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Gutenberg_press.jpg/800px-Gutenberg_press.jpg",
+        "caption": "იოჰან გუტენბერგის საბეჭდი დაზგა",
+        "credit": "Wikimedia Commons"
+      },
+      "start_date": {
+        "year": "1440"
+      },
+      "text": {
+        "headline": "საბეჭდი მანქანის გამოგონება",
+        "text": "<p>იოჰან გუტენბერგმა შექმნა მოძრავი ლიტერებით ბეჭდვის ტექნოლოგია, რამაც რევოლუცია მოახდინა ინფორმაციის გავრცელებასა და წიგნიერებაში.</p>"
+      }
+    },
+    {
+      "media": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/1/10/Alexander_Graham_Bell.jpg",
+        "caption": "ალექსანდრ გრემ ბელი პირველი ტელეფონით",
+        "credit": "Library of Congress"
+      },
+      "start_date": {
+        "year": "1876",
+        "month": "3",
+        "day": "10"
+      },
+      "text": {
+        "headline": "პირველი სატელეფონო ზარი",
+        "text": "<p>ალექსანდრ გრემ ბელმა განახორციელა პირველი წარმატებული სატელეფონო გადაცემა თავის ასისტენტთან.</p>"
+      }
+    },
+    {
+      "media": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/8/86/First_flight2.jpg",
+        "caption": "ძმები რაიტების პირველი ფრენა",
+        "credit": "Library of Congress"
+      },
+      "start_date": {
+        "year": "1903",
+        "month": "12",
+        "day": "17"
+      },
+      "text": {
+        "headline": "ავიაციის ერის დასაწყისი",
+        "text": "<p>ორვილ და ვისბურ რაიტებმა განახორციელეს კაცობრიობის ისტორიაში პირველი მართვადი ფრენა ძრავიანი აპარატით.</p>"
+      }
+    },
+    {
+      "media": {
+        "url": "https://youtu.be/KMF86Iqu9wA",
+        "caption": "სპუტნიკ-1-ის გაშვება",
+        "credit": "YouTube"
+      },
+      "start_date": {
+        "year": "1957",
+        "month": "10",
+        "day": "4"
+      },
+      "text": {
+        "headline": "პირველი ხელოვნური თანამგზავრი",
+        "text": "<p>დედამიწის ორბიტაზე გაეშვა პირველი ხელოვნური თანამგზავრი „სპუტნიკ 1“, რამაც სათავე დაუდო კოსმოსურ ერას.</p>"
+      }
+    },
+    {
+      "media": {
+        "url": "https://youtu.be/qT4501FzN_0",
+        "caption": "იური გაგარინის ისტორიული გაფრენა კოსმოსში",
+        "credit": "YouTube"
+      },
+      "start_date": {
+        "year": "1961",
+        "month": "4",
+        "day": "12"
+      },
+      "text": {
+        "headline": "პირველი ადამიანი კოსმოსში",
+        "text": "<p>იური გაგარინი გახდა პირველი ადამიანი, რომელიც ხომალდ „ვოსტოკ-1“-ით გაფრინდა ღია კოსმოსში.</p>"
+      }
+    },
+    {
+      "media": {
+        "url": "https://youtu.be/cwZb2mqId0A",
+        "caption": "Apollo 11: ნილ არმსტრონგის პირველი ნაბიჯი",
+        "credit": "NASA"
+      },
+      "start_date": {
+        "year": "1969",
+        "month": "7",
+        "day": "20"
+      },
+      "text": {
+        "headline": "ადამიანის დაჯდომა მთვარეზე",
+        "text": "<p>ნილ არმსტრონგი გახდა პირველი ადამიანი, რომელმაც ფეხი დადგა მთვარის ზედაპირზე.</p>"
+      }
+    },
+    {
+      "media": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/d/d1/First_Web_Server.jpg",
+        "caption": "პირველი ვებ სერვერი CERN-ში",
+        "credit": "CERN"
+      },
+      "start_date": {
+        "year": "1989",
+        "month": "3",
+        "day": "12"
+      },
+      "text": {
+        "headline": "World Wide Web-ის შექმნა",
+        "text": "<p>სერ ტიმ ბერნერს-ლიმ CERN-ში შექმნა მსოფლიო აბლაბუდის (WWW) კონცეფცია.</p>"
+      }
+    },
+    {
+      "media": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/0/04/International_Space_Station_after_undocking_of_STS-132.jpg",
+        "caption": "საერთაშორისო კოსმოსური სადგური (ISS)",
+        "credit": "NASA"
+      },
+      "start_date": {
+        "year": "1998",
+        "month": "11",
+        "day": "20"
+      },
+      "text": {
+        "headline": "ISS-ის გაშვება",
+        "text": "<p>ორბიტაზე გაიგზავნა საერთაშორისო კოსმოსური სადგურის პირველი მოდული.</p>"
+      }
+    },
+    {
+      "media": {
+        "url": "https://youtu.be/Vquad476n20",
+        "caption": "პირველი iPhone-ის პრეზენტაცია",
+        "credit": "Apple"
+      },
+      "start_date": {
+        "year": "2007",
+        "month": "1",
+        "day": "9"
+      },
+      "text": {
+        "headline": "iPhone-ის გამოჩენა",
+        "text": "<p>სტივ ჯობსმა წარადგინა პირველი სმარტფონი, რამაც შეცვალა მობილური კომუნიკაციები.</p>"
+      }
+    },
+    {
+      "media": {
+        "url": "https://youtu.be/v6ihVeEoUdo",
+        "caption": "ჯეიმს ვების ტელესკოპის გაშვება",
+        "credit": "NASA"
+      },
+      "start_date": {
+        "year": "2021",
+        "month": "12",
+        "day": "25"
+      },
+      "text": {
+        "headline": "ჯეიმს ვების ტელესკოპი",
+        "text": "<p>კოსმოსის სიღრმეების შესასწავლად გაეშვა ისტორიაში ყველაზე მძლავრი ინფრაწითელი ტელესკოპი.</p>"
+      }
+    }
+  ]
+}
